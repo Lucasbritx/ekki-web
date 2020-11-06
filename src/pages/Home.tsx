@@ -106,8 +106,8 @@ const Home = (): JSX.Element => {
   };
 
   const getUserName = (id: number): string => {
-    const a: IUser[] = users.filter((user: IUser) => (user.id === id));
-    return a ? a[0].name : '';
+    const userArray: IUser[] = users.filter((user: IUser) => (user.id === id));
+    return userArray ? userArray[0].name : '';
   };
 
   const createNewUser = (user: JSON): void => {
