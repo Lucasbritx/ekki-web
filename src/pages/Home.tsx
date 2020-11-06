@@ -127,6 +127,7 @@ const Home = (): JSX.Element => {
   const createNewTransaction = async (transaction: JSON): Promise<void> => {
     await UserService.createNewTransaction(defaultUserId, transaction);
     getUserBalance();
+    getUserTransactions();
   };
 
   const initialLoad = (): void => {
