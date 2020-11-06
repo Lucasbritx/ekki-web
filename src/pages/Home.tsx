@@ -89,7 +89,6 @@ interface IUser {
 const Home = (): JSX.Element => {
   const [extract, setExtract] = useState<IExtract[]>([]);
   const [users, setUsers] = useState<IUser[]>([]);
-  const [showModal, setShowModal] = useState(false);
   const [showExtractModal, setShowExtractModal] = useState(false);
   const [showTransactionModal, setShowTransactionModal] = useState(false);
   const [showNewUserModal, setShowNewUserModal] = useState(false);
@@ -112,12 +111,10 @@ const Home = (): JSX.Element => {
 
   const createNewUser = (user: JSON): void => {
     UserService.createNewUser(user);
-    setShowModal(false);
   };
 
   const createNewTransaction = (transaction: JSON): void => {
     UserService.createNewTransaction(defaultUserId, transaction);
-    setShowModal(false);
   };
 
   const initialLoad = (): void => {
