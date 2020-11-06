@@ -6,9 +6,24 @@ import UserService from '../service/UserService';
 const defaultUserId = 1;
 
 const BalanceContainer = styled.div`
-text-align: center;
+  margin-bottom: 20px;
+  p {
+    margin-left: 10px;
+    color: #c9c9c9;
+    margin-bottom: 0px;
+  }
 `;
 
+const NameUser = styled.h3`
+  text-align: left;
+  font-size: 20px;
+`;
+
+const BalanceUser = styled.h3`
+  text-align: left;
+  font-size: 18px;
+  margin-left: 10px;
+`;
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const ShowBalance = (): JSX.Element => {
@@ -31,8 +46,9 @@ const ShowBalance = (): JSX.Element => {
 
   return (
     <BalanceContainer>
-      <h2>Bem vindo {name}!</h2>
-      <h3>Seu saldo: R${balance}</h3>
+      <NameUser>Bem vindo {name}!</NameUser>
+      <p>Saldo disponível</p>
+      <BalanceUser>R${balance}</BalanceUser>
     </BalanceContainer>
   );
 };

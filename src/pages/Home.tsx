@@ -1,5 +1,6 @@
 // eslint-disable-next-line no-use-before-define
 import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
 import ShowBalance from './ShowBalance';
 import Modal from '../components/Modal';
 import NewUser from './NewUser';
@@ -13,6 +14,58 @@ const newTransaction = 'Nova transação';
 const seeExtract = 'Ver extrato';
 const addUser = 'Adicionar conta';
 const defaultUserId = 1;
+
+const Container = styled.div`
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 10px;
+`;
+
+const ContainerDataUser = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 45%;
+    height: 40%;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.75);
+    transition: 0.25s;
+
+    @media (max-width: 800px) {
+      width: 90%;
+      margin: 10px;
+      transition: 0.25s;
+    }
+
+    button {
+      margin-bottom: 5px;
+      width: 100%;
+    }
+`;
+
+const ContainerOtherOptionsUser = styled.div`
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    button {
+      width: 100%;
+    }
+
+    button:first-child {
+        margin-right: 5px;
+    }
+`;
+
+const ContainerOptionsUser = styled.div`
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+`;
 
 interface IExtract {
   id: number;
@@ -38,12 +91,12 @@ const Home = (): JSX.Element => {
   const [users, setUsers] = useState<IUser[]>([]);
   const [showModal, setShowModal] = useState(false);
 
-  const getUserTransactions = (): any => {
+  const getUserTransactions = (): void => {
     UserService.getUserTransactions(defaultUserId).then((response: any) => {
       setExtract(response);
     });
   };
-  const getUsers = (): any => {
+  const getUsers = (): void => {
     UserService.getUsers().then((response: any) => {
       setUsers(response);
     });
@@ -54,12 +107,12 @@ const Home = (): JSX.Element => {
     return a ? a[0].name : '';
   };
 
-  const createNewUser = (user: JSON): any => {
+  const createNewUser = (user: JSON): void => {
     UserService.createNewUser(user);
     setShowModal(false);
   };
 
-  const initialLoad = (): any => {
+  const initialLoad = (): void => {
     getUsers();
     getUserTransactions();
   };
@@ -68,44 +121,52 @@ const Home = (): JSX.Element => {
 
   return (
     <>
-      <ShowBalance />
-      <Modal
-        textButton={seeExtract}
-        title={extractTitle}
-      >
-        <>
-          {extract.map((e: IExtract) => (
-            <ul key={e.id}>
-              <li>{getUserName(e.senderId)}</li>
-              <li>{getUserName(e.receiverId)}</li>
-              <li>R${e.value}</li>
-            </ul>
-          ))}
-        </>
-      </Modal>
-      <Modal
-        show={showModal}
-        textButton={addUser}
-        title={addUser}
-      >
-        <NewUser
-          onClick={(e: any) => createNewUser(e)}
-          textButton={addUser}
-        />
-      </Modal>
-      <Modal
-        textButton={newTransaction}
-        title={newTransaction}
-      >
-        <NewTransaction
-          options={users.map((user) => ({
-            label: user.name,
-            value: user.id,
-          }))}
-          onClick={(e: any) => createNewUser(e)}
-          textButton={newTransaction}
-        />
-      </Modal>
+      <Container>
+        <ContainerDataUser>
+          <ShowBalance />
+          <ContainerOptionsUser>
+            <Modal
+              textButton={seeExtract}
+              title={extractTitle}
+            >
+              <>
+                {extract.map((e: IExtract) => (
+                  <ul key={e.id}>
+                    <li>{getUserName(e.senderId)}</li>
+                    <li>{getUserName(e.receiverId)}</li>
+                    <li>R${e.value}</li>
+                  </ul>
+                ))}
+              </>
+            </Modal>
+            <ContainerOtherOptionsUser>
+              <Modal
+                showModal={showModal}
+                textButton={addUser}
+                title={addUser}
+              >
+                <NewUser
+                  onClick={(e: any) => createNewUser(e)}
+                  textButton={addUser}
+                />
+              </Modal>
+              <Modal
+                textButton={newTransaction}
+                title={newTransaction}
+              >
+                <NewTransaction
+                  options={users.map((user) => ({
+                    label: user.name,
+                    value: user.id,
+                  }))}
+                  onClick={(e: JSON) => createNewUser(e)}
+                  textButton={newTransaction}
+                />
+              </Modal>
+            </ContainerOtherOptionsUser>
+          </ContainerOptionsUser>
+        </ContainerDataUser>
+      </Container>
     </>
   );
 };
