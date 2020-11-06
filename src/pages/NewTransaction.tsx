@@ -46,7 +46,6 @@ display:none
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const NewTransaction = (props: ITransaction): JSX.Element => {
   const { onClick, textButton, options } = props;
-  const initialValue = null;
   const [value, setValue] = useState('');
   const [amount, setAmount] = useState('');
 
@@ -64,14 +63,14 @@ const NewTransaction = (props: ITransaction): JSX.Element => {
         onChange={(e) => { setValue(e.target.value); }}
       />
       <Select
+        placeholder="Conta"
         options={options.map((user: any) => ({
-          label: user.name,
           value: user.id,
+          label: user.name,
         }))}
         onChange={(event: any) => {
           setValue(event.value);
         }}
-        value={initialValue}
       />
       <InputDiv>
         <p>Valor:</p>
