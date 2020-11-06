@@ -1,9 +1,10 @@
 // eslint-disable-next-line no-use-before-define
 import React, { useEffect, useState } from 'react';
-import ShowBalance from './showBalance';
+import ShowBalance from './ShowBalance';
 import Modal from '../components/Modal';
 import NewUser from './NewUser';
 import UserService from '../service/UserService';
+import NewTransaction from './NewTransaction';
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -32,9 +33,10 @@ interface IUser {
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-const Home = (): any => {
-  const [extract, setExtract] = useState([]);
-  const [users, setUsers] = useState([]);
+const Home = (): JSX.Element => {
+  const [extract, setExtract] = useState<IExtract[]>([]);
+  const [users, setUsers] = useState<IUser[]>([]);
+  const [showModal, setShowModal] = useState(false);
 
   const getUserTransactions = (): any => {
     UserService.getUserTransactions(defaultUserId).then((response: any) => {
@@ -53,9 +55,8 @@ const Home = (): any => {
   };
 
   const createNewUser = (user: JSON): any => {
-    UserService.createNewUser(user).then((response: any) => {
-      setExtract(response);
-    });
+    UserService.createNewUser(user);
+    setShowModal(false);
   };
 
   const initialLoad = (): any => {
@@ -66,13 +67,13 @@ const Home = (): any => {
   useEffect(initialLoad, []);
 
   return (
-    <div>
+    <>
       <ShowBalance />
       <Modal
         textButton={seeExtract}
         title={extractTitle}
       >
-        <div>
+        <>
           {extract.map((e: IExtract) => (
             <ul key={e.id}>
               <li>{getUserName(e.senderId)}</li>
@@ -80,9 +81,10 @@ const Home = (): any => {
               <li>R${e.value}</li>
             </ul>
           ))}
-        </div>
+        </>
       </Modal>
       <Modal
+        show={showModal}
         textButton={addUser}
         title={addUser}
       >
@@ -91,7 +93,20 @@ const Home = (): any => {
           textButton={addUser}
         />
       </Modal>
-    </div>
+      <Modal
+        textButton={newTransaction}
+        title={newTransaction}
+      >
+        <NewTransaction
+          options={users.map((user) => ({
+            label: user.name,
+            value: user.id,
+          }))}
+          onClick={(e: any) => createNewUser(e)}
+          textButton={newTransaction}
+        />
+      </Modal>
+    </>
   );
 };
 

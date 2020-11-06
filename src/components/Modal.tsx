@@ -8,6 +8,7 @@ import styled from 'styled-components';
 interface IModal {
   title: string;
   text: string;
+  showModal?: boolean;
   textButton: string;
   children: any;
 }
@@ -17,9 +18,9 @@ max-height: 85vh;
 overflow-y: scroll;
 `;
 
-const ModalStructure = (props: IModal): any => {
+const ModalStructure = (props: IModal): JSX.Element => {
   const {
-    title, text, children, textButton,
+    title, text, children, textButton, showModal,
   } = props;
 
   const [show, setShow] = useState(false);
@@ -35,7 +36,7 @@ const ModalStructure = (props: IModal): any => {
 
       <Modal
         size="sm"
-        show={show}
+        show={show || showModal}
         onHide={handleClose}
       >
         <Modal.Header closeButton>
@@ -52,6 +53,7 @@ const ModalStructure = (props: IModal): any => {
 
 ModalStructure.propTypes = {
   title: PropTypes.string.isRequired,
+  showModal: PropTypes.bool,
   text: PropTypes.string,
   // eslint-disable-next-line react/forbid-prop-types
   children: PropTypes.object,
@@ -61,6 +63,7 @@ ModalStructure.propTypes = {
 ModalStructure.defaultProps = {
   text: '',
   children: null,
+  showModal: false,
 };
 
 export default ModalStructure;

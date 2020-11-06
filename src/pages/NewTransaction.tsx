@@ -1,10 +1,11 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 // eslint-disable-next-line no-use-before-define
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import MaskedInput from 'react-maskedinput';
 import { Button } from 'react-bootstrap';
-import PropTypes from 'prop-types';
+import Select from 'react-select';
+import UserService from '../service/UserService';
 
 const BalanceContainer = styled.div`
 margin: 10px;
@@ -30,6 +31,7 @@ input{
 interface ITransaction {
   textButton: string;
   onClick: any;
+  options: any;
 }
 
 interface IUser {
@@ -39,8 +41,8 @@ interface IUser {
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-const NewUser = (props: ITransaction): JSX.Element => {
-  const { onClick, textButton } = props;
+const NewTransaction = (props: ITransaction): JSX.Element => {
+  const { onClick, textButton, options } = props;
   const [phone, setPhone] = useState('');
   const [name, setName] = useState('');
   const [CPF, setCPF] = useState('');
@@ -53,14 +55,9 @@ const NewUser = (props: ITransaction): JSX.Element => {
 
   return (
     <BalanceContainer>
-      <InputDiv>
-        <p>Nome: </p>
-        <input
-          placeholder="Nome"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-      </InputDiv>
+      <Select
+        options={options}
+      />
       <InputDiv>
         <p>Telefone:</p>
         <MaskedInput
@@ -79,19 +76,11 @@ const NewUser = (props: ITransaction): JSX.Element => {
           onChange={(e) => setCPF(e.target.value.trim())}
         />
       </InputDiv>
-      <Button
-        variant="primary"
-        onClick={() => onClick(createUserJson())}
-      >
+      <Button variant="primary" onClick={() => onClick(createUserJson())}>
         {textButton}
       </Button>
     </BalanceContainer>
   );
 };
 
-NewUser.propTypes = {
-  onClick: PropTypes.func.isRequired,
-  textButton: PropTypes.string.isRequired,
-};
-
-export default NewUser;
+export default NewTransaction;

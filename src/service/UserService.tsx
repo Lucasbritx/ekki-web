@@ -1,7 +1,24 @@
 import api from '../middlewares/axios';
 
+interface IUser {
+  id: number;
+  name: string;
+  phone: number;
+  balance: number;
+  limit: number;
+  cpf: string;
+}
+
+interface IExtract {
+  id: number;
+  senderId: number;
+  receiverId: number;
+  value: number;
+  transactionDate: number;
+}
+
 class UserService {
-  static getUsers(): any {
+  static getUsers(): Promise<IUser> {
     const url = '/users/';
     return api.get(url)
       .then((res) => res.data)
@@ -10,7 +27,7 @@ class UserService {
       });
   }
 
-  static getUserBalance(userId: number): any {
+  static getUserBalance(userId: number): Promise<IUser> {
     const url = `/users/${userId}`;
     return api.get(url)
       .then((res) => res.data)
@@ -19,7 +36,7 @@ class UserService {
       });
   }
 
-  static getUserTransactions(userId: number): any {
+  static getUserTransactions(userId: number): Promise<IExtract> {
     const url = `/transactions/extract/${userId}`;
     return api.get(url)
       .then((res) => res.data)
@@ -28,7 +45,7 @@ class UserService {
       });
   }
 
-  static newTransaction(senderId: number, receiverId: number, value:number): any {
+  static newTransaction(senderId: number, receiverId: number, value:number): Promise<IExtract> {
     const url = '/transactions/';
     return api.post(url, {
       senderId,
@@ -41,9 +58,9 @@ class UserService {
       });
   }
 
-  static createNewUser(body: JSON): Promise<void> {
+  static createNewUser(body: JSON): Promise<IUser> {
     const url = '/users/';
-    return api.post(url, body)
+    return api.post<IUser>(url, body)
       .then((res) => res.data)
       .catch((error: any) => {
         throw error;

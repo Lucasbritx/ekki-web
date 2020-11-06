@@ -11,7 +11,7 @@ text-align: center;
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const ShowBalance = (): any => {
+const ShowBalance = (): JSX.Element => {
   const [balance, setBalance] = useState(0);
   const [name, setName] = useState('');
   const [limit, setLimit] = useState(0);
