@@ -116,16 +116,17 @@ const Home = (): JSX.Element => {
     UserService.createNewUser(user);
   };
 
-  const createNewTransaction = (transaction: JSON): void => {
-    UserService.createNewTransaction(defaultUserId, transaction);
-  };
-
   const getUserBalance = (): void => {
     UserService.getUserBalance(defaultUserId).then((response: any) => {
       setBalance(parseFloat(response.balance));
       setLimit(parseFloat(response.limit));
       setName(response.name);
     });
+  };
+
+  const createNewTransaction = (transaction: JSON): void => {
+    UserService.createNewTransaction(defaultUserId, transaction);
+    getUserBalance();
   };
 
   const initialLoad = (): void => {
@@ -188,7 +189,6 @@ const Home = (): JSX.Element => {
                   options={users.filter((user) => user.id !== 1)}
                   onClick={(e: JSON) => {
                     setShowTransactionModal(false);
-                    getUserBalance();
                     return createNewTransaction(e);
                   }}
                   textButton={newTransaction}
