@@ -34,6 +34,7 @@ const ShowBalance = (): JSX.Element => {
   const getUserBalance = (): any => {
     UserService.getUserBalance(defaultUserId).then((response: any) => {
       setBalance(parseFloat(response.balance));
+      setLimit(parseFloat(response.limit));
       setName(response.name);
     });
   };
@@ -49,6 +50,8 @@ const ShowBalance = (): JSX.Element => {
       <NameUser>Bem vindo {name}!</NameUser>
       <p>Saldo disponível</p>
       <BalanceUser>R${balance}</BalanceUser>
+      <p>Limite disponível</p>
+      <BalanceUser>R${limit}</BalanceUser>
     </BalanceContainer>
   );
 };
