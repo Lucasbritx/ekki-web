@@ -90,6 +90,9 @@ const Home = (): JSX.Element => {
   const [extract, setExtract] = useState<IExtract[]>([]);
   const [users, setUsers] = useState<IUser[]>([]);
   const [showModal, setShowModal] = useState(false);
+  const [showExtractModal, setShowExtractModal] = useState(false);
+  const [showTransactionModal, setShowTransactionModal] = useState(false);
+  const [showNewUserModal, setShowNewUserModal] = useState(false);
 
   const getUserTransactions = (): void => {
     UserService.getUserTransactions(defaultUserId).then((response: any) => {
@@ -112,6 +115,11 @@ const Home = (): JSX.Element => {
     setShowModal(false);
   };
 
+  const createNewTransaction = (transaction: JSON): void => {
+    UserService.createNewTransaction(defaultUserId, transaction);
+    setShowModal(false);
+  };
+
   const initialLoad = (): void => {
     getUsers();
     getUserTransactions();
@@ -126,6 +134,8 @@ const Home = (): JSX.Element => {
           <ShowBalance />
           <ContainerOptionsUser>
             <Modal
+              showModal={showExtractModal}
+              setShowModal={(e: boolean) => setShowExtractModal(e)}
               textButton={seeExtract}
               title={extractTitle}
             >
@@ -141,25 +151,32 @@ const Home = (): JSX.Element => {
             </Modal>
             <ContainerOtherOptionsUser>
               <Modal
-                showModal={showModal}
+                showModal={showNewUserModal}
+                setShowModal={(e: boolean) => setShowNewUserModal(e)}
                 textButton={addUser}
                 title={addUser}
               >
                 <NewUser
-                  onClick={(e: any) => createNewUser(e)}
+                  onClick={(e: any) => {
+                    setShowNewUserModal(false);
+                    users.push(e);
+                    return createNewUser(e);
+                  }}
                   textButton={addUser}
                 />
               </Modal>
               <Modal
+                showModal={showTransactionModal}
+                setShowModal={(e: boolean) => setShowTransactionModal(e)}
                 textButton={newTransaction}
                 title={newTransaction}
               >
                 <NewTransaction
-                  options={users.map((user) => ({
-                    label: user.name,
-                    value: user.id,
-                  }))}
-                  onClick={(e: JSON) => createNewUser(e)}
+                  options={users.filter((user) => user.id !== 1)}
+                  onClick={(e: JSON) => {
+                    setShowTransactionModal(false);
+                    return createNewTransaction(e);
+                  }}
                   textButton={newTransaction}
                 />
               </Modal>

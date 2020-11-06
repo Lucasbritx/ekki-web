@@ -34,46 +34,53 @@ interface ITransaction {
   options: any;
 }
 
-interface IUser {
-  name: string;
-  phone: string;
-  cpf: string;
+interface ITransactionJSON {
+  receiverId: string;
+  value: number;
 }
+
+const InputSelect = styled.input`
+display:none
+`;
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const NewTransaction = (props: ITransaction): JSX.Element => {
   const { onClick, textButton, options } = props;
-  const [phone, setPhone] = useState('');
-  const [name, setName] = useState('');
-  const [CPF, setCPF] = useState('');
+  const initialValue = null;
+  const [value, setValue] = useState('');
+  const [amount, setAmount] = useState('');
 
-  const createUserJson = (): IUser => ({
-    name,
-    phone,
-    cpf: CPF.trim(),
+  const createUserJson = (): ITransactionJSON => ({
+    receiverId: value,
+    value: Number(amount),
   });
 
   return (
     <BalanceContainer>
+      <p>Conta:</p>
+      <InputSelect
+        value={value}
+        type="text"
+        onChange={(e) => { setValue(e.target.value); }}
+      />
       <Select
-        options={options}
+        options={options.map((user: any) => ({
+          label: user.name,
+          value: user.id,
+        }))}
+        onChange={(event: any) => {
+          setValue(event.value);
+        }}
+        value={initialValue}
       />
       <InputDiv>
-        <p>Telefone:</p>
-        <MaskedInput
-          placeholder="Telefone"
-          mask="11111111111"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-        />
-      </InputDiv>
-      <InputDiv>
-        <p>CPF:</p>
-        <MaskedInput
-          placeholder="CPF"
-          mask="11111111111"
-          value={CPF}
-          onChange={(e) => setCPF(e.target.value.trim())}
+        <p>Valor:</p>
+        <input
+          max={Number(options.balance) + Number(options.limit)}
+          type="number"
+          placeholder="Valor"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
         />
       </InputDiv>
       <Button variant="primary" onClick={() => onClick(createUserJson())}>

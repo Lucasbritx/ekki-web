@@ -45,12 +45,10 @@ class UserService {
       });
   }
 
-  static newTransaction(senderId: number, receiverId: number, value:number): Promise<IExtract> {
+  static createNewTransaction(senderId: number, body: JSON): Promise<IExtract> {
     const url = '/transactions/';
     return api.post(url, {
-      senderId,
-      receiverId,
-      value,
+      senderId, ...body,
     })
       .then((res) => res.data)
       .catch((error: any) => {

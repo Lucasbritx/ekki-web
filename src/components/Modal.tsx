@@ -8,7 +8,8 @@ import styled from 'styled-components';
 interface IModal {
   title: string;
   text: string;
-  showModal?: boolean;
+  showModal: boolean;
+  setShowModal: any;
   textButton: string;
   children: any;
 }
@@ -20,26 +21,21 @@ overflow-y: scroll;
 
 const ModalStructure = (props: IModal): JSX.Element => {
   const {
-    title, text, children, textButton, showModal,
+    title, text, children, textButton, showModal, setShowModal,
   } = props;
-
-  const [show, setShow] = useState(false);
-
-  const handleClose = (): void => setShow(false);
-  const handleShow = (): void => setShow(true);
 
   return (
     <>
-      <Button variant="primary" onClick={handleShow}>
+      <Button variant="primary" onClick={() => setShowModal(true)}>
         {textButton}
       </Button>
 
       <Modal
         size="sm"
-        show={show || showModal}
-        onHide={handleClose}
+        show={showModal}
+        onHide={() => setShowModal(false)}
       >
-        <Modal.Header closeButton>
+        <Modal.Header>
           {title}
         </Modal.Header>
         <ModalBody>
