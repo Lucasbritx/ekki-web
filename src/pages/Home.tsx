@@ -92,6 +92,9 @@ const Home = (): JSX.Element => {
   const [showExtractModal, setShowExtractModal] = useState(false);
   const [showTransactionModal, setShowTransactionModal] = useState(false);
   const [showNewUserModal, setShowNewUserModal] = useState(false);
+  const [balance, setBalance] = useState(0);
+  const [name, setName] = useState('');
+  const [limit, setLimit] = useState(0);
 
   const getUserTransactions = (): void => {
     UserService.getUserTransactions(defaultUserId).then((response: any) => {
@@ -117,9 +120,18 @@ const Home = (): JSX.Element => {
     UserService.createNewTransaction(defaultUserId, transaction);
   };
 
+  const getUserBalance = (): void => {
+    UserService.getUserBalance(defaultUserId).then((response: any) => {
+      setBalance(parseFloat(response.balance));
+      setLimit(parseFloat(response.limit));
+      setName(response.name);
+    });
+  };
+
   const initialLoad = (): void => {
     getUsers();
     getUserTransactions();
+    getUserBalance();
   };
 
   useEffect(initialLoad, []);
@@ -128,7 +140,11 @@ const Home = (): JSX.Element => {
     <>
       <Container>
         <ContainerDataUser>
-          <ShowBalance />
+          <ShowBalance
+            balance={balance}
+            limit={limit}
+            name={name}
+          />
           <ContainerOptionsUser>
             <Modal
               showModal={showExtractModal}
@@ -172,6 +188,7 @@ const Home = (): JSX.Element => {
                   options={users.filter((user) => user.id !== 1)}
                   onClick={(e: JSON) => {
                     setShowTransactionModal(false);
+                    getUserBalance();
                     return createNewTransaction(e);
                   }}
                   textButton={newTransaction}

@@ -24,27 +24,16 @@ const BalanceUser = styled.h3`
   font-size: 18px;
   margin-left: 10px;
 `;
+
+interface IUser {
+  name: string;
+  balance: number;
+  limit: number;
+}
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const ShowBalance = (): JSX.Element => {
-  const [balance, setBalance] = useState(0);
-  const [name, setName] = useState('');
-  const [limit, setLimit] = useState(0);
-
-  const getUserBalance = (): void => {
-    UserService.getUserBalance(defaultUserId).then((response: any) => {
-      setBalance(parseFloat(response.balance));
-      setLimit(parseFloat(response.limit));
-      setName(response.name);
-    });
-  };
-
-  const initialLoad = (): void => {
-    getUserBalance();
-  };
-
-  useEffect(initialLoad, []);
-
+const ShowBalance = (props: IUser): JSX.Element => {
+  const { balance, name, limit } = props;
   return (
     <BalanceContainer>
       <NameUser>Bem vindo {name}!</NameUser>
