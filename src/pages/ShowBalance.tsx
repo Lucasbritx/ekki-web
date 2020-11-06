@@ -31,7 +31,7 @@ const ShowBalance = (): JSX.Element => {
   const [name, setName] = useState('');
   const [limit, setLimit] = useState(0);
 
-  const getUserBalance = (): any => {
+  const getUserBalance = (): void => {
     UserService.getUserBalance(defaultUserId).then((response: any) => {
       setBalance(parseFloat(response.balance));
       setLimit(parseFloat(response.limit));
@@ -39,7 +39,7 @@ const ShowBalance = (): JSX.Element => {
     });
   };
 
-  const initialLoad = (): any => {
+  const initialLoad = (): void => {
     getUserBalance();
   };
 
