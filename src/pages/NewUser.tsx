@@ -40,8 +40,7 @@ interface IUser {
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-const NewUser = (props: ITransaction): JSX.Element => {
-  const { onClick, textButton } = props;
+const NewUser = ({ onClick, textButton }: ITransaction): JSX.Element => {
   const [phone, setPhone] = useState('');
   const [name, setName] = useState('');
   const [CPF, setCPF] = useState('');

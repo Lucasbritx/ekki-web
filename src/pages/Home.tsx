@@ -18,6 +18,7 @@ const seeExtract = 'Ver extrato';
 const addUser = 'Adicionar conta';
 const SUCCESS_TRANSACTION = 'Transação efetuada com sucesso';
 const FAILED_TRANSACTION = 'Não foi possível realizar a transação';
+const FAILED_NEW_USER = 'Erro ao criar usuário';
 const defaultUserId = 1;
 
 const Container = styled.div`
@@ -153,8 +154,16 @@ const Home = (): JSX.Element => {
     }
   };
 
+  const createNewUser = async (e: IUser): Promise<void> => {
+    try {
+      await UserService.createNewUser(e);
+      initialLoad();
+    } catch (error) {
+      notifyError(FAILED_NEW_USER);
+    }
+  };
+
   useEffect(initialLoad, []);
-  useEffect(initialLoad, [users]);
 
   return (
     <>
@@ -194,7 +203,7 @@ const Home = (): JSX.Element => {
                   onClick={(e: IUser) => {
                     setShowNewUserModal(false);
                     users.push(e);
-                    return UserService.createNewUser(e);
+                    return createNewUser(e);
                   }}
                   textButton={addUser}
                 />

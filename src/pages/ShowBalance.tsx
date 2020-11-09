@@ -29,17 +29,14 @@ interface IUser {
 }
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const ShowBalance = (props: IUser): JSX.Element => {
-  const { balance, name, limit } = props;
-  return (
-    <BalanceContainer>
-      <NameUser>Bem vindo {name}!</NameUser>
-      <p>Saldo disponível</p>
-      <BalanceUser>R${balance}</BalanceUser>
-      <p>Limite disponível</p>
-      <BalanceUser>R${limit}</BalanceUser>
-    </BalanceContainer>
-  );
-};
+const ShowBalance = ({ balance, name, limit }: IUser): JSX.Element => (
+  <BalanceContainer>
+    <NameUser>Bem vindo {name}!</NameUser>
+    <p>Saldo disponível</p>
+    <BalanceUser>R${balance}</BalanceUser>
+    <p>Limite disponível</p>
+    <BalanceUser>R${limit}</BalanceUser>
+  </BalanceContainer>
+);
 
 export default ShowBalance;

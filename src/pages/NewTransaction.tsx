@@ -55,10 +55,9 @@ display:none
 `;
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-const NewTransaction = (props: ITransaction): JSX.Element => {
-  const {
-    onClick, textButton, options, user,
-  } = props;
+const NewTransaction = ({
+  onClick, textButton, options, user,
+}: ITransaction): JSX.Element => {
   const [value, setValue] = useState('');
   const [amount, setAmount] = useState('');
   const [validated, setValidated] = useState(false);
@@ -74,9 +73,6 @@ const NewTransaction = (props: ITransaction): JSX.Element => {
 
   const handleSubmit = (event: any): void => {
     event.preventDefault();
-    console.log(options);
-    console.log(value);
-    console.log(amount);
     if (value && amount) {
       if (Number(amount) > (Number(user.balance) + Number(user.limit))) {
         notifyError(INSUFFICIENT_FUNDS);
