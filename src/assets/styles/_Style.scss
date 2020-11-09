@@ -1,0 +1,15 @@
+@import './Colors';
+
+$weightBase: 500;
+
+%title3{
+    font-weight: $weightBase;
+    font-size: 16px;
+    line-height: 20px;
+    color:get-color(text,title3);
+}
+
+.title3{
+    @extend %title3;
+}
+

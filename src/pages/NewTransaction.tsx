@@ -1,11 +1,11 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 // eslint-disable-next-line no-use-before-define
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import MaskedInput from 'react-maskedinput';
 import { Button } from 'react-bootstrap';
 import Select from 'react-select';
-import UserService from '../service/UserService';
+import EKKIForm from '../components/Form';
+import { notifyError, notifySuccess } from '../middlewares/notification';
 
 const BalanceContainer = styled.div`
 margin: 10px;
@@ -28,9 +28,20 @@ input{
 };
 `;
 
+interface IUser {
+  id: number;
+  name: string;
+  email: string;
+  phone: number;
+  balance: number;
+  limit: number;
+  cpf: string;
+}
+
 interface ITransaction {
   textButton: string;
   onClick: any;
+  user: IUser;
   options: any;
 }
 
@@ -45,47 +56,77 @@ display:none
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const NewTransaction = (props: ITransaction): JSX.Element => {
-  const { onClick, textButton, options } = props;
+  const {
+    onClick, textButton, options, user,
+  } = props;
   const [value, setValue] = useState('');
   const [amount, setAmount] = useState('');
+  const [validated, setValidated] = useState(false);
 
-  const createUserJson = (): ITransactionJSON => ({
+  const REQUIRED_FIELDS = 'Digite os campos obrigatórios!';
+  const INSUFFICIENT_FUNDS = 'Saldo insuficiente';
+  const USING_LIMIT = 'Utilizando limite da conta';
+
+  const createTransactionJson = (): ITransactionJSON => ({
     receiverId: value,
     value: Number(amount),
   });
 
+  const handleSubmit = (event: any): void => {
+    event.preventDefault();
+    console.log(options);
+    console.log(value);
+    console.log(amount);
+    if (value && amount) {
+      if (Number(amount) > (Number(user.balance) + Number(user.limit))) {
+        notifyError(INSUFFICIENT_FUNDS);
+        event.stopPropagation();
+      } else if (Number(amount) > Number(user.balance)) {
+        notifySuccess(USING_LIMIT);
+      }
+      onClick(createTransactionJson());
+    } else {
+      notifyError(REQUIRED_FIELDS);
+      event.stopPropagation();
+    }
+    setValidated(true);
+  };
+
   return (
-    <BalanceContainer>
-      <p>Conta:</p>
-      <InputSelect
-        value={value}
-        type="text"
-        onChange={(e) => { setValue(e.target.value); }}
-      />
-      <Select
-        placeholder="Conta"
-        options={options.map((user: any) => ({
-          value: user.id,
-          label: user.name,
-        }))}
-        onChange={(event: any) => {
-          setValue(event.value);
-        }}
-      />
-      <InputDiv>
-        <p>Valor:</p>
-        <input
-          max={Number(options.balance) + Number(options.limit)}
-          type="number"
-          placeholder="Valor"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
+    <EKKIForm noValidate validated={validated} onSubmit={handleSubmit}>
+      <BalanceContainer>
+        <p>Conta:</p>
+        <InputSelect
+          required
+          value={value}
+          type="text"
+          onChange={(e) => { setValue(e.target.value); }}
         />
-      </InputDiv>
-      <Button variant="primary" onClick={() => onClick(createUserJson())}>
-        {textButton}
-      </Button>
-    </BalanceContainer>
+        <Select
+          placeholder="Conta"
+          options={options.map((u: IUser) => ({
+            value: u.id,
+            label: u.name,
+          }))}
+          onChange={(event: any) => {
+            setValue(event.value);
+          }}
+        />
+        <InputDiv>
+          <p>Valor:</p>
+          <input
+            required
+            type="number"
+            placeholder="Valor"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+          />
+        </InputDiv>
+        <Button type="submit" variant="primary">
+          {textButton}
+        </Button>
+      </BalanceContainer>
+    </EKKIForm>
   );
 };
 

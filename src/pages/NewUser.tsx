@@ -2,9 +2,10 @@
 // eslint-disable-next-line no-use-before-define
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import MaskedInput from 'react-maskedinput';
+import MaskedInput from 'react-text-mask';
 import { Button } from 'react-bootstrap';
-import PropTypes from 'prop-types';
+import EKKIForm from '../components/Form';
+import { notifyError, notifySuccess } from '../middlewares/notification';
 
 const BalanceContainer = styled.div`
 margin: 10px;
@@ -44,6 +45,23 @@ const NewUser = (props: ITransaction): JSX.Element => {
   const [phone, setPhone] = useState('');
   const [name, setName] = useState('');
   const [CPF, setCPF] = useState('');
+  const [validated, setValidated] = useState(false);
+
+  const REQUIRED_FIELDS = 'Digite os campos obrigatórios!';
+  const USER_CREATED = 'Usuário cadastrado';
+
+  const replaceTelephone = (telephone: string): string => telephone
+    .replace('(', '')
+    .replace(')', '')
+    .replace('-', '')
+    .replace(' ', '')
+    .replace('_', '');
+
+  const replaceCPF = (cpf: string): string => cpf
+    .replace('.', '')
+    .replace('.', '')
+    .replace('.', '')
+    .replace('-', '');
 
   const createUserJson = (): IUser => ({
     name,
@@ -51,47 +69,56 @@ const NewUser = (props: ITransaction): JSX.Element => {
     cpf: CPF.trim(),
   });
 
-  return (
-    <BalanceContainer>
-      <InputDiv>
-        <p>Nome: </p>
-        <input
-          placeholder="Nome"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-      </InputDiv>
-      <InputDiv>
-        <p>Telefone:</p>
-        <MaskedInput
-          placeholder="Telefone"
-          mask="11111111111"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-        />
-      </InputDiv>
-      <InputDiv>
-        <p>CPF:</p>
-        <MaskedInput
-          placeholder="CPF"
-          mask="11111111111"
-          value={CPF}
-          onChange={(e) => setCPF(e.target.value.trim())}
-        />
-      </InputDiv>
-      <Button
-        variant="primary"
-        onClick={() => onClick(createUserJson())}
-      >
-        {textButton}
-      </Button>
-    </BalanceContainer>
-  );
-};
+  const handleSubmit = (event: any): void => {
+    event.preventDefault();
+    if ((phone && phone.length === 11) && name && (CPF && CPF.length === 11)) {
+      onClick(createUserJson());
+      notifySuccess(USER_CREATED);
+    } else {
+      notifyError(REQUIRED_FIELDS);
+      event.stopPropagation();
+    }
+    setValidated(true);
+  };
 
-NewUser.propTypes = {
-  onClick: PropTypes.func.isRequired,
-  textButton: PropTypes.string.isRequired,
+  return (
+    <EKKIForm noValidate validated={validated} onSubmit={handleSubmit}>
+      <BalanceContainer>
+        <InputDiv>
+          <p>Nome: </p>
+          <input
+            placeholder="Nome"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </InputDiv>
+        <InputDiv>
+          <p>Telefone:</p>
+          <MaskedInput
+            placeholder="(__)__________"
+            mask={['(', /[0-9]/, /\d/, ')', /\d/, /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
+            value={phone}
+            onChange={(e) => setPhone(replaceTelephone(e.target.value))}
+          />
+        </InputDiv>
+        <InputDiv>
+          <p>CPF:</p>
+          <MaskedInput
+            placeholder="CPF"
+            mask={[/\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '-', /\d/, /\d/]}
+            value={CPF}
+            onChange={(e) => setCPF(replaceCPF(e.target.value))}
+          />
+        </InputDiv>
+        <Button
+          variant="primary"
+          type="submit"
+        >
+          {textButton}
+        </Button>
+      </BalanceContainer>
+    </EKKIForm>
+  );
 };
 
 export default NewUser;

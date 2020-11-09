@@ -1,9 +1,6 @@
 // eslint-disable-next-line no-use-before-define
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import UserService from '../service/UserService';
-
-const defaultUserId = 1;
 
 const BalanceContainer = styled.div`
   margin-bottom: 20px;

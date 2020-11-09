@@ -9,6 +9,11 @@ interface IUser {
   cpf: string;
 }
 
+interface ITransaction {
+  receiverId: number;
+  value: number;
+}
+
 interface IExtract {
   id: number;
   senderId: number;
@@ -21,8 +26,8 @@ class UserService {
   static getUsers(): Promise<IUser> {
     const url = '/users/';
     return api.get(url)
-      .then((res) => res.data)
-      .catch((error: any) => {
+      .then((res): IUser => res.data)
+      .catch((error: Error) => {
         throw error;
       });
   }
@@ -30,8 +35,8 @@ class UserService {
   static getUserBalance(userId: number): Promise<IUser> {
     const url = `/users/${userId}`;
     return api.get(url)
-      .then((res) => res.data)
-      .catch((error: any) => {
+      .then((res): IUser => res.data)
+      .catch((error: Error) => {
         throw error;
       });
   }
@@ -40,27 +45,27 @@ class UserService {
     const url = `/transactions/extract/${userId}`;
     return api.get(url)
       .then((res) => res.data)
-      .catch((error: any) => {
+      .catch((error: Error) => {
         throw error;
       });
   }
 
-  static createNewTransaction(senderId: number, body: JSON): Promise<IExtract> {
+  static createNewTransaction(senderId: number, body: ITransaction): Promise<IExtract> {
     const url = '/transactions/';
     return api.post(url, {
       senderId, ...body,
     })
-      .then((res) => res.data)
-      .catch((error: any) => {
+      .then((res): IExtract => res.data)
+      .catch((error: Error) => {
         throw error;
       });
   }
 
-  static createNewUser(body: JSON): Promise<IUser> {
+  static createNewUser(body: IUser): Promise<IUser> {
     const url = '/users/';
     return api.post<IUser>(url, body)
-      .then((res) => res.data)
-      .catch((error: any) => {
+      .then((res): IUser => res.data)
+      .catch((error: Error) => {
         throw error;
       });
   }

@@ -1,11 +1,14 @@
 // eslint-disable-next-line no-use-before-define
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import ShowBalance from './ShowBalance';
 import Modal from '../components/Modal';
 import NewUser from './NewUser';
 import UserService from '../service/UserService';
 import NewTransaction from './NewTransaction';
+import { notifyError, notifySuccess } from '../middlewares/notification';
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -13,6 +16,8 @@ const extractTitle = 'Extrato de transferências';
 const newTransaction = 'Nova transação';
 const seeExtract = 'Ver extrato';
 const addUser = 'Adicionar conta';
+const SUCCESS_TRANSACTION = 'Transação efetuada com sucesso';
+const FAILED_TRANSACTION = 'Não foi possível realizar a transação';
 const defaultUserId = 1;
 
 const Container = styled.div`
@@ -75,6 +80,12 @@ interface IExtract {
   transactionDate: number;
 }
 
+interface ITransaction {
+  senderId: number;
+  receiverId: number;
+  value: number;
+}
+
 interface IUser {
   id: number;
   name: string;
@@ -99,21 +110,23 @@ const Home = (): JSX.Element => {
   const getUserTransactions = (): void => {
     UserService.getUserTransactions(defaultUserId).then((response: any) => {
       setExtract(response);
-    });
+    })
+      .catch((error: Error) => {
+        throw error;
+      });
   };
   const getUsers = (): void => {
     UserService.getUsers().then((response: any) => {
       setUsers(response);
-    });
+    })
+      .catch((error: Error) => {
+        throw error;
+      });
   };
 
   const getUserName = (id: number): string => {
     const userArray: IUser[] = users.filter((user: IUser) => (user.id === id));
     return userArray ? userArray[0].name : '';
-  };
-
-  const createNewUser = (user: JSON): void => {
-    UserService.createNewUser(user);
   };
 
   const getUserBalance = (): void => {
@@ -124,23 +137,29 @@ const Home = (): JSX.Element => {
     });
   };
 
-  const createNewTransaction = async (transaction: JSON): Promise<void> => {
-    await UserService.createNewTransaction(defaultUserId, transaction);
-    getUserBalance();
-    getUserTransactions();
-  };
-
   const initialLoad = (): void => {
     getUsers();
     getUserTransactions();
     getUserBalance();
   };
 
+  const createNewTransaction = async (transaction: ITransaction): Promise<void> => {
+    try {
+      await UserService.createNewTransaction(defaultUserId, transaction);
+      notifySuccess(SUCCESS_TRANSACTION);
+      initialLoad();
+    } catch {
+      notifyError(FAILED_TRANSACTION);
+    }
+  };
+
   useEffect(initialLoad, []);
+  useEffect(initialLoad, [users]);
 
   return (
     <>
       <Container>
+        <ToastContainer />
         <ContainerDataUser>
           <ShowBalance
             balance={balance}
@@ -172,10 +191,10 @@ const Home = (): JSX.Element => {
                 title={addUser}
               >
                 <NewUser
-                  onClick={(e: any) => {
+                  onClick={(e: IUser) => {
                     setShowNewUserModal(false);
                     users.push(e);
-                    return createNewUser(e);
+                    return UserService.createNewUser(e);
                   }}
                   textButton={addUser}
                 />
@@ -187,8 +206,9 @@ const Home = (): JSX.Element => {
                 title={newTransaction}
               >
                 <NewTransaction
+                  user={users.filter((user) => user.id === 1)[0]}
                   options={users.filter((user) => user.id !== 1)}
-                  onClick={(e: JSON) => {
+                  onClick={(e: ITransaction) => {
                     setShowTransactionModal(false);
                     return createNewTransaction(e);
                   }}

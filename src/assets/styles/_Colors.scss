@@ -1,0 +1,40 @@
+//Grey color derivations
+$grey200:#6B6B6B;
+$grey150: #787F82;
+$grey100:#4F4F4F;
+
+//Green color derivations
+$green600:#D4EDDA;
+$green500:#BFEDAE;
+$green400:#83C06E;
+$green300:#599A42;
+$green200:#497639;
+$green100:#326220;
+
+//Red color derivations
+$red500:#F8D7DA;
+$red400:#F5C6CB;
+$red300:#E61B1B;
+$red200:#C01C1C;
+$red100:#721C24;
+
+@function get-color($component,$type){
+  @return map-get(map-get($palettes,$component),$type);
+}
+
+$palettes:(
+    notification: (
+        successText: $green300,
+        successBackground: $green600,
+        successBorder: $green500,
+        successClose: $green400,
+        successCheck: $green400,
+        errorText: $red100,
+        errorBackground: $red500,
+        errorBorder: $red400,
+        errorClose: $red400,
+    ),
+    text:(
+        title3: $grey100,
+    ),
+);

@@ -1,0 +1,32 @@
+@import './Style';
+@import './Colors';
+
+%notification{
+    @extend %title3;
+    text-align: center;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+}
+
+.successNotification{
+    @extend %notification;
+    color: get-color(notification,successText);
+    background: get-color(notification,successBackground);
+    border-radius: 4px;
+    border: 1px solid get-color(notification,successBorder);
+}
+
+.successNotification>button{
+    color: get-color(notification,successClose);
+}
+
+.errorNotification{
+    @extend %notification;
+    color: get-color(notification,errorText);
+    background: get-color(notification,errorBackground);
+    border-radius: 4px;
+    border: 1px solid get-color(notification,errorBorder);
+}
+
+.errorNotification>button{
+    color: get-color(notification,errorClose);
+}

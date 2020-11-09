@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 // eslint-disable-next-line no-use-before-define
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Button, Modal } from 'react-bootstrap';
 import styled from 'styled-components';
@@ -19,33 +19,29 @@ max-height: 85vh;
 overflow-y: scroll;
 `;
 
-const ModalStructure = (props: IModal): JSX.Element => {
-  const {
-    title, text, children, textButton, showModal, setShowModal,
-  } = props;
+const ModalStructure = ({
+  title, text, children, textButton, showModal, setShowModal,
+}: IModal): JSX.Element => (
+  <>
+    <Button variant="primary" onClick={() => setShowModal(true)}>
+      {textButton}
+    </Button>
 
-  return (
-    <>
-      <Button variant="primary" onClick={() => setShowModal(true)}>
-        {textButton}
-      </Button>
-
-      <Modal
-        size="sm"
-        show={showModal}
-        onHide={() => setShowModal(false)}
-      >
-        <Modal.Header>
-          {title}
-        </Modal.Header>
-        <ModalBody>
-          {text}
-          {children}
-        </ModalBody>
-      </Modal>
-    </>
-  );
-};
+    <Modal
+      size="sm"
+      show={showModal}
+      onHide={() => setShowModal(false)}
+    >
+      <Modal.Header>
+        {title}
+      </Modal.Header>
+      <ModalBody>
+        {text}
+        {children}
+      </ModalBody>
+    </Modal>
+  </>
+);
 
 ModalStructure.propTypes = {
   title: PropTypes.string.isRequired,
